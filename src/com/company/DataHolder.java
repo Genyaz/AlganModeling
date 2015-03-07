@@ -32,11 +32,16 @@ public class DataHolder {
             tokens = new StringTokenizer(in.readLine());
         }
         Map<String, String> densityMap = new HashMap<String, String>();
-        densityMap.put("AL(S)", "2690");
-        densityMap.put("GA(L)", "5900");
-        densityMap.put("ALN(S)", "3200");
-        densityMap.put("GAN(S)", "6150");
+        densityMap.put("AL", "2690");
+        densityMap.put("GA", "5900");
+        densityMap.put("ALN", "3200");
+        densityMap.put("GAN", "6150");
         data.put("DENSITY", densityMap);
+        Map<String, String> molarMap = new HashMap<String, String>();
+        molarMap.put("AL", "27");
+        molarMap.put("GA", "70");
+        data.put("MOLAR", molarMap);
+
     }
 
     public static String getData(String parameter, String chemicalAgent) {
