@@ -11,6 +11,7 @@ public class EquationSystem {
     private final static Random random = RandomHolder.random;
     private final static int SEARCH_SEGMENT_DIVISION = 10;
     private final static int SEARCH_ITERATIONS = 10;
+    private final static double GRADIENT_DESCENT_PRECISION = 1e-6;
 
     /**
      * Finds argument of rough function minimum
@@ -65,6 +66,39 @@ public class EquationSystem {
             }
         }
         return answer;
+    }
+
+    /**
+     * Finds argument of rough function minimum
+     * @param f function
+     * @param x0 initial argument
+     * @param initialStep initial dx
+     * @param precision minimum dx
+     * @return x| f(x) is rough minimum
+     */
+    public static double gradientDescent(Function f, double x0, double initialStep, double precision) {
+        double[] arg = new double[1];
+        arg[0] = x0;
+        double derivative = f.totalDerivative(arg)[0];
+        double step = initialStep, x = x0, x1, min = f.calculate(arg);
+        while (step > precision) {
+            if (derivative < 0) {
+                x1 = x + step;
+            } else {
+                x1 = x - step;
+            }
+            arg[0] = x1;
+            double cur = f.calculate(arg);
+            if (cur < min) {
+                min = cur;
+                x = x1;
+                arg[0] = x;
+                derivative = f.totalDerivative(arg)[0];
+            } else {
+                step /= 2;
+            }
+        }
+        return x;
     }
 
     private Function[] functions;
@@ -123,14 +157,15 @@ public class EquationSystem {
 
     /**
      * @param eps allowable discrepancy
+     * @param maxIterations maximum iterations count
      * @return argument x, discrepancy(x) < eps
      */
-    public double[] newtonMethod(double eps) {
+    public double[] newtonMethod(double eps, long maxIterations) {
         double[] x = new double[n];
         for (int i = 0; i < n; i++) {
             x[i] = random.nextDouble();
         }
-        while (true) {
+        for (int q = 0; q < maxIterations; q++) {
             double [] dx = linearDerivativeSolution(x);
             if (dx[n] < eps) break;
             for (int i = 0; i < n; i++) {
@@ -155,24 +190,27 @@ public class EquationSystem {
             dr = discrepancy(x, d, r);
             cur = Math.min(cur, dr);
         } while (dr <= cur);
-        return superSearch(0, r, new Function() {
+        Function f = new Function() {
             @Override
             public double calculate(double[] arg) {
                 return discrepancy(x, d, arg[0]);
             }
-        }, SEARCH_SEGMENT_DIVISION, SEARCH_ITERATIONS);
+        };
+        //return superSearch(0, r, f, SEARCH_SEGMENT_DIVISION, SEARCH_ITERATIONS);
+        return gradientDescent(f, 1, 0.5, GRADIENT_DESCENT_PRECISION);
     }
 
     /**
      * @param eps allowable discrepancy
+     * @param maxIterations maximum iterations count
      * @return argument x, discrepancy(x) < eps
      */
-    public double[] universalMethod(double eps) {
+    public double[] universalMethod(double eps, long maxIterations) {
         double[] x = new double[n];
         for (int i = 0; i < n; i++) {
             x[i] = random.nextDouble();
         }
-        while (true) {
+        for (int q = 0; q < maxIterations; q++) {
             double [] dx = linearDerivativeSolution(x);
             if (dx[n] < eps) break;
             double k = localMinimum(x, dx);

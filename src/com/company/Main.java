@@ -28,10 +28,10 @@ public class Main {
         };
         EquationSystem equationSystem = new EquationSystem(functions);
         System.out.println("Newton method:");
-        double[] answer = equationSystem.newtonMethod(1e-6);
+        double[] answer = equationSystem.newtonMethod(1e-12, 1000000);
         System.out.println(Arrays.toString(answer));
         System.out.println("Universal method");
-        answer = equationSystem.universalMethod(1e-6);
+        answer = equationSystem.universalMethod(1e-12, 1000000);
         System.out.println(Arrays.toString(answer));
     }
 }
