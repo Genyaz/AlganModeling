@@ -175,7 +175,7 @@ public class Main {
         }
         out.close();
         out = new PrintWriter("task2.out");
-        for (int i = 35; i <= 65; i++) {
+        for (int i = 65; i <= 95; i++) {
             double T = 10 * i + 273;
             solveGaClx(pressure, T, 0.01, out);
         }
