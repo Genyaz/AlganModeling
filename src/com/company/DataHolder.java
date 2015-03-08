@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class DataHolder {
-    private final static double PRESSURE = 100000;
-    private final static double R = 8.314;
+    public final static double PRESSURE = 100000;
+    public final static double R = 8.314;
     private final static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
     private static boolean hasData = false;
 

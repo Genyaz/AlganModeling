@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class Main {
 
+    public static final double ALLOWED_DISCREPANCY = 1000;
+
     public static void solveAlClx(Map<String, Double> pressure, double T, double delta, PrintWriter out) {
         final String[] chemicalAgent = new String[5];
         chemicalAgent[0] = "HCl";
@@ -55,17 +57,29 @@ public class Main {
             }
         };
         EquationSystem equationSystem = new EquationSystem(functions);
-        double[] x = equationSystem.newtonMethod(1e-12, 1000000);
+        boolean correct = false;
+        double[] x = null;
+        while (!correct) {
+            x = equationSystem.universalMethod(1e-12, 1000000);
+            correct = true;
+            for (int i = 0; i < 5; i++) {
+                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.PRESSURE + ALLOWED_DISCREPANCY);
+            }
+        }
+        System.out.println("T = " + T + "K");
         out.println("T = " + T + "K");
         for (int i = 0; i < 5; i++) {
+            System.out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
             out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
         }
         double[] g = new double[5];
         for (int i = 0; i < 5; i++) {
             g[i] = d[i] * (p[i] - x[i]) / (8314 * T * delta);
+            System.out.println("G(" + chemicalAgent[i] + ") = " + g[i]);
             out.println("G(" + chemicalAgent[i] + ") = " + g[i]);
         }
         double v = (g[1] + g[2] + g[3]) * (DataHolder.getDouble("mu", "Al") / DataHolder.getDouble("density", "Al")) * 1000000000;
+        System.out.println("Ve(Al) = " + v);
         out.println("Ve(Al) = " + v);
     }
 
@@ -117,17 +131,29 @@ public class Main {
             }
         };
         EquationSystem equationSystem = new EquationSystem(functions);
-        double[] x = equationSystem.newtonMethod(1e-12, 1000000);
+        boolean correct = false;
+        double[] x = null;
+        while (!correct) {
+            x = equationSystem.universalMethod(1e-12, 1000000);
+            correct = true;
+            for (int i = 0; i < 5; i++) {
+                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.PRESSURE + ALLOWED_DISCREPANCY);
+            }
+        };
+        System.out.println("T = " + T + "K");
         out.println("T = " + T + "K");
         for (int i = 0; i < 5; i++) {
+            System.out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
             out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
         }
         double[] g = new double[5];
         for (int i = 0; i < 5; i++) {
             g[i] = d[i] * (p[i] - x[i]) / (8314 * T * delta);
+            System.out.println("G(" + chemicalAgent[i] + ") = " + g[i]);
             out.println("G(" + chemicalAgent[i] + ") = " + g[i]);
         }
         double v = (g[1] + g[2] + g[3]) * (DataHolder.getDouble("mu", "Ga") / DataHolder.getDouble("density", "Ga")) * 1000000000;
+        System.out.println("Ve(Ga) = " + v);
         out.println("Ve(Ga) = " + v);
     }
 
