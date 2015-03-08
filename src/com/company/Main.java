@@ -171,7 +171,7 @@ public class Main {
             d[i] = DataHolder.getD(chemicalAgent[i], T);
         }
         final double k9 = DataHolder.getK(T, 9);
-        final double k10 = DataHolder.getK(T, 9);
+        final double k10 = DataHolder.getK(T, 10);
         Function[] functions = new Function[6];
         functions[0] = new Function() {
             @Override
