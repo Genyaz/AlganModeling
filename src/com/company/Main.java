@@ -57,7 +57,7 @@ public class Main {
         };
         EquationSystem equationSystem = new EquationSystem(functions);
         double[] x = equationSystem.universalMethod(1e-12, 1000000);
-        out.println("T = " + T);
+        out.println("T = " + T + "K");
         for (int i = 0; i < 5; i++) {
             out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
         }
@@ -66,7 +66,7 @@ public class Main {
             g[i] = d[i] * (p[i] - x[i]) / (8314 * T * delta);
             out.println("G(" + chemicalAgent[i] + ") = " + g[i]);
         }
-        double v = (g[1] + g[2] + g[3]) / (DataHolder.getDouble("molar", "Al") * DataHolder.getDouble("density", "Al")) * 1000000000;
+        double v = (g[1] + g[2] + g[3]) * (DataHolder.getDouble("mu", "Al") / DataHolder.getDouble("density", "Al")) * 1000000000;
         out.println("Ve(Al) = " + v);
     }
 

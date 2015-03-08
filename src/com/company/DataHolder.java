@@ -37,10 +37,6 @@ public class DataHolder {
         densityMap.put("ALN", "3200");
         densityMap.put("GAN", "6150");
         data.put("DENSITY", densityMap);
-        Map<String, String> molarMap = new HashMap<String, String>();
-        molarMap.put("AL", "27");
-        molarMap.put("GA", "70");
-        data.put("MOLAR", molarMap);
 
     }
 
