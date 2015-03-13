@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class DataHolder {
-    public final static double PRESSURE = 100000;
+    public final static double ATMOSPHERIC_PRESSURE = 100000;
     public final static double R = 8.314;
     private final static Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
     private static boolean hasData = false;
@@ -63,7 +63,7 @@ public class DataHolder {
         double epsIN2 = Math.sqrt(getDouble("eps", chemicalAgent) * getDouble("eps", "N2"));
         double omega11 = 1.074 * Math.pow(T / epsIN2, -0.1604);
         double muIN2 = 2 * getDouble("mu", chemicalAgent) * getDouble("mu", "N2") / (getDouble("mu", chemicalAgent) + getDouble("mu", "N2"));
-        return 0.02628 * Math.pow(T, 1.5) / (PRESSURE * sigmaIN2 * omega11 * Math.sqrt(muIN2));
+        return 0.02628 * Math.pow(T, 1.5) / (ATMOSPHERIC_PRESSURE * sigmaIN2 * omega11 * Math.sqrt(muIN2));
     }
 
     public static double getG(String chemicalAgent, double T) {
@@ -76,29 +76,41 @@ public class DataHolder {
     public static double getK(double T, int number) {
         switch (number) {
             case 1:
-                return Math.exp(-(2 * getG("HCl", T) + 2 * getG("Al", T) - 2 * getG("AlCl", T) - getG("H2", T)) / (R * T)) / PRESSURE;
+                //2 HCl + 2 Al = 2 AlCl + H2
+                return Math.exp(-(2 * getG("HCl", T) + 2 * getG("Al", T) - 2 * getG("AlCl", T) - getG("H2", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             case 2:
+                // 2 HCl + Al = AlCl2 + H2
                 return Math.exp(-(2 * getG("HCl", T) + getG("Al", T) - getG("AlCl2", T) - getG("H2", T)) / (R * T));
             case 3:
-                return Math.exp(-(6 * getG("HCl", T) + 2 * getG("Al", T) - 2 * getG("AlCl3", T) - 3 * getG("H2", T)) / (R * T)) * PRESSURE;
+                // 6 HCl + 2 Al = 3 AlCl3 + 3 H2
+                return Math.exp(-(6 * getG("HCl", T) + 2 * getG("Al", T) - 2 * getG("AlCl3", T) - 3 * getG("H2", T)) / (R * T)) * ATMOSPHERIC_PRESSURE;
             case 4:
-                return Math.exp(-(2 * getG("HCl", T) + 2 * getG("Ga", T) - 2 * getG("GaCl", T) - getG("H2", T)) / (R * T)) / PRESSURE;
+                // 2 HCl + 2 Ga = 2 GaCl + H2
+                return Math.exp(-(2 * getG("HCl", T) + 2 * getG("Ga", T) - 2 * getG("GaCl", T) - getG("H2", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             case 5:
+                // 2 HCl + Ga = GaCl2 + H2
                 return Math.exp(-(2 * getG("HCl", T) + getG("Ga", T) - getG("GaCl2", T) - getG("H2", T)) / (R * T));
             case 6:
-                return Math.exp(-(6 * getG("HCl", T) + 2 * getG("Ga", T) - 2 * getG("GaCl3", T) - 3 * getG("H2", T)) / (R * T)) * PRESSURE;
+                //6 HCl + 2 Ga = 2 GaCl3 + 3 H2
+                return Math.exp(-(6 * getG("HCl", T) + 2 * getG("Ga", T) - 2 * getG("GaCl3", T) - 3 * getG("H2", T)) / (R * T)) * ATMOSPHERIC_PRESSURE;
             case 7:
+                // AlCl + NH3 = AlN + HCl + H2
                 return Math.exp(-(getG("AlCl", T) + getG("NH3", T) - getG("AlN", T) - getG("HCl", T) - getG("H2", T)) / (R * T));
             case 8:
-                return Math.exp(-(2 * getG("AlCl", T) + 2 * getG("NH3", T) - 2 * getG("AlN", T) - 4 * getG("HCl", T) - getG("H2", T)) / (R * T)) / PRESSURE;
+                // 2 AlCl2 + 2 NH3 = 2 AlN + 4 HCl + H2
+                return Math.exp(-(2 * getG("AlCl2", T) + 2 * getG("NH3", T) - 2 * getG("AlN", T) - 4 * getG("HCl", T) - getG("H2", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             case 9:
-                return Math.exp(-(getG("AlCl3", T) + getG("NH3", T) - getG("AlN", T) - 3 * getG("HCl", T)) / (R * T)) / PRESSURE;
+                // AlCl3 + NH3 = AlN + 3 HCl
+                return Math.exp(-(getG("AlCl3", T) + getG("NH3", T) - getG("AlN", T) - 3 * getG("HCl", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             case 10:
+                // GaCl + NH3 = GaN + HCl + H2
                 return Math.exp(-(getG("GaCl", T) + getG("NH3", T) - getG("GaN", T) - getG("HCl", T) - getG("H2", T)) / (R * T));
             case 11:
-                return Math.exp(-(2 * getG("GaCl", T) + 2 * getG("NH3", T) - 2 * getG("GaN", T) - 4 * getG("HCl", T) - getG("H2", T)) / (R * T)) / PRESSURE;
+                // 2 GaCl2 + 2 NH3 = 2 GaN + 4 HCl + H2
+                return Math.exp(-(2 * getG("GaCl2", T) + 2 * getG("NH3", T) - 2 * getG("GaN", T) - 4 * getG("HCl", T) - getG("H2", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             case 12:
-                return Math.exp(-(getG("GaCl3", T) + getG("NH3", T) - getG("GaN", T) - 3 * getG("HCl", T)) / (R * T)) / PRESSURE;
+                // GaCl3 + NH3 = GaN + 3HCl
+                return Math.exp(-(getG("GaCl3", T) + getG("NH3", T) - getG("GaN", T) - 3 * getG("HCl", T)) / (R * T)) / ATMOSPHERIC_PRESSURE;
             default:
                 return 0;
         }

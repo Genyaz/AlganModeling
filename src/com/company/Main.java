@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Main {
 
+    // We allow answer pressures in [-ALLOWED_DISCREPANCY; ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY]
     public static final double ALLOWED_DISCREPANCY = 1000;
 
     public static void solveAlClx(Map<String, Double> pressure, double T, double delta, PrintWriter out) {
@@ -19,19 +20,26 @@ public class Main {
         final double k1 = DataHolder.getK(T, 1);
         final double k2 = DataHolder.getK(T, 2);
         final double k3 = DataHolder.getK(T, 3);
+        // x[i] = Pe(chemicalAgent[i])
         Function[] functions = new Function[5];
+        // 2 HCl + 2 Al = 2 AlCl + H2
+        // Pe(HCl)^2 = K1 * Pe(AlCl)^2 * Pe(H2)
         functions[0] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return x[0] * x[0] - k1 * x[1] * x[1] * x[4];
             }
         };
+        // 2 HCl + Al = AlCl2 + H2
+        // Pe(HCl) ^ 2 = K2 * Pe(AlCl2) * Pe(H2)
         functions[1] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return x[0] * x[0] - k2 * x[2] * x[4];
             }
         };
+        // 6 HCl + 2 Al = 2 AlCl3 + 3 H2
+        // Pe(HCl)^6 = K3 * Pe(AlCl3)^2 * Pe(H2)^3
         functions[2] = new Function() {
             @Override
             public double calculate(double[] x) {
@@ -44,12 +52,17 @@ public class Main {
             p[i] = pressure.get(chemicalAgent[i]);
             d[i] = DataHolder.getD(chemicalAgent[i], T);
         }
+        // G(HCl) + 2 * G(H2) = 0
+        // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) = 0
         functions[3] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]);
             }
         };
+        // G(HCl) + G(AlCl) + 2 * G(AlCl2) + 3 * G(AlCl3) = 0
+        // D(HCl) * (Pg(HCl) - Pe(HCl)) + D(AlCl) * (Pg(AlCl) - Pe(AlCl)) + 2 * D(AlCl2) * (Pg(AlCl2) - Pe(AlCl2))
+        // + 3 * D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) = 0
         functions[4] = new Function() {
             @Override
             public double calculate(double[] x) {
@@ -63,7 +76,7 @@ public class Main {
             x = equationSystem.universalMethod(1e-12, 1000000);
             correct = true;
             for (int i = 0; i < 5; i++) {
-                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.PRESSURE + ALLOWED_DISCREPANCY);
+                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
         }
         System.out.println("T = " + T + "K");
@@ -93,19 +106,26 @@ public class Main {
         final double k4 = DataHolder.getK(T, 4);
         final double k5 = DataHolder.getK(T, 5);
         final double k6 = DataHolder.getK(T, 6);
+        // x[i] = Pe(chemicalAgent[i])
         Function[] functions = new Function[5];
+        // 2 HCl + 2 Ga = 2 GaCl + H2
+        // Pe(HCl)^2 = K4 * Pe(GaCl)^2 * Pe(H2)
         functions[0] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return x[0] * x[0] - k4 * x[1] * x[1] * x[4];
             }
         };
+        // 2 HCl + Ga = GaCl2 + H2
+        // Pe(HCl)^2 = K5 * Pe(GaCl2) * Pe(H2)
         functions[1] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return x[0] * x[0] - k5 * x[2] * x[4];
             }
         };
+        // 6 HCl + 2 Ga = 2 GaCl3 + 3 H2
+        // Pe(HCl)^6 = K6 * Pe(GaCl3)^2 * Pe(H2)^3
         functions[2] = new Function() {
             @Override
             public double calculate(double[] x) {
@@ -118,12 +138,17 @@ public class Main {
             p[i] = pressure.get(chemicalAgent[i]);
             d[i] = DataHolder.getD(chemicalAgent[i], T);
         }
+        // G(HCl) + 2 * G(H2) = 0
+        // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) = 0
         functions[3] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]);
             }
         };
+        // G(HCl) + G(GaCl) + 2 * G(GaCl2) + 3 * G(GaCl3) = 0
+        // D(HCl) * (Pg(HCl) - Pe(HCl)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) + 2 * D(GaCl2) * (Pg(GaCl2) - Pe(GaCl2))
+        // + 3 * D(GaCl3) * (Pg(GaCl3) - Pe(GaCl3)) = 0
         functions[4] = new Function() {
             @Override
             public double calculate(double[] x) {
@@ -137,7 +162,7 @@ public class Main {
             x = equationSystem.universalMethod(1e-12, 1000000);
             correct = true;
             for (int i = 0; i < 5; i++) {
-                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.PRESSURE + ALLOWED_DISCREPANCY);
+                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
         };
         System.out.println("T = " + T + "K");
@@ -172,37 +197,51 @@ public class Main {
         }
         final double k9 = DataHolder.getK(T, 9);
         final double k10 = DataHolder.getK(T, 10);
+        // x[i] = Pe(chemicalAgent[i]), i = 0..4
+        // x[5] = x = G(AlCl3) / (G(AlCl3) + G(GaCl))
         Function[] functions = new Function[6];
+        // AlCl3 + NH3 = AlN + 3 HCl
+        // Pe(AlCl3) * Pe(NH3) = K9 * x * Pe(HCl)^3
         functions[0] = new Function() {
             @Override
             public double calculate(double[] x) {
-                return x[3] * x[2] - k9 * x[5] * x[0] * x[0] * x[0] * x[0];
+                return x[3] * x[2] - k9 * x[5] * x[0] * x[0] * x[0];
             }
         };
+        // GaCl + NH3 = GaN + HCl + H2
+        // Pe(GaCl) * Pe(NH3) = K10 * (1 - x) * Pe(HCl) * Pe(H2)
         functions[1] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return x[1] * x[2] - k10 * (1 - x[5]) * x[0] * x[4];
             }
         };
+        // G(HCl) + 2 * G(H2) + 3 * G(NH3) = 0
+        // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) + 3 * D(NH3) * (Pg(NH3) - Pe(NH3))
         functions[2] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]) + 3 * d[2] * (p[2] - x[2]);
             }
         };
+        // 3 * G(AlCl3) + G(GaCl) + G(HCl) = 0
+        // 3 * D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) + D(HCl) * (Pg(HCl) - Pe(HCl)) = 0
         functions[3] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return 3 * d[3] * (p[3] - x[3]) + d[1] * (p[1] - x[1]) + d[0] * (p[0] - x[0]);
             }
         };
+        // G(AlCl3) + G(GaCl) = G(NH3)
+        // D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) = D(NH3) * (Pg(NH3) - Pe(NH3))
         functions[4] = new Function() {
             @Override
             public double calculate(double[] x) {
                 return d[3] * (p[3] - x[3]) + d[1] * (p[1] - x[1]) - d[2] * (p[2] - x[2]);
             }
         };
+        // G(AlCl3) = x * (G(AlCl3) + G(GaCl))
+        // D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) = x * (D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)))
         functions[5] = new Function() {
             @Override
             public double calculate(double[] x) {
@@ -216,7 +255,7 @@ public class Main {
             x = equationSystem.universalMethod(1e-12, 1000000);
             correct = true;
             for (int i = 0; i < 5; i++) {
-                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.PRESSURE + ALLOWED_DISCREPANCY);
+                correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
             correct &= (x[5] >= 0 && x[5] <= 1);
         };
@@ -243,7 +282,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Map<String, Double> pressure = new HashMap<String, Double>();
         PrintWriter out;
-        /*pressure.put("HCl", 10000d);
+        pressure.put("HCl", 10000d);
         pressure.put("N2", 90000d);
         pressure.put("AlCl", 0d);
         pressure.put("AlCl2", 0d);
@@ -263,7 +302,7 @@ public class Main {
             double T = 10 * i + 273;
             solveGaClx(pressure, T, 0.01, out);
         }
-        out.close(); */
+        out.close();
         out = new PrintWriter("task3.out");
         pressure.put("NH3", 1500d);
         pressure.put("HCl", 0d);
