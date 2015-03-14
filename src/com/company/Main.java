@@ -52,7 +52,7 @@ public class Main {
             p[i] = pressure.get(chemicalAgent[i]);
             d[i] = DataHolder.getD(chemicalAgent[i], T);
         }
-        // G(HCl) + 2 * G(H2) = 0
+        // G(H) = G(HCl) + 2 * G(H2) = 0
         // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) = 0
         functions[3] = new Function() {
             @Override
@@ -60,7 +60,7 @@ public class Main {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]);
             }
         };
-        // G(HCl) + G(AlCl) + 2 * G(AlCl2) + 3 * G(AlCl3) = 0
+        // G(Cl) = G(HCl) + G(AlCl) + 2 * G(AlCl2) + 3 * G(AlCl3) = 0
         // D(HCl) * (Pg(HCl) - Pe(HCl)) + D(AlCl) * (Pg(AlCl) - Pe(AlCl)) + 2 * D(AlCl2) * (Pg(AlCl2) - Pe(AlCl2))
         // + 3 * D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) = 0
         functions[4] = new Function() {
@@ -138,7 +138,7 @@ public class Main {
             p[i] = pressure.get(chemicalAgent[i]);
             d[i] = DataHolder.getD(chemicalAgent[i], T);
         }
-        // G(HCl) + 2 * G(H2) = 0
+        // G(H) = G(HCl) + 2 * G(H2) = 0
         // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) = 0
         functions[3] = new Function() {
             @Override
@@ -146,7 +146,7 @@ public class Main {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]);
             }
         };
-        // G(HCl) + G(GaCl) + 2 * G(GaCl2) + 3 * G(GaCl3) = 0
+        // G(Cl) = G(HCl) + G(GaCl) + 2 * G(GaCl2) + 3 * G(GaCl3) = 0
         // D(HCl) * (Pg(HCl) - Pe(HCl)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) + 2 * D(GaCl2) * (Pg(GaCl2) - Pe(GaCl2))
         // + 3 * D(GaCl3) * (Pg(GaCl3) - Pe(GaCl3)) = 0
         functions[4] = new Function() {
@@ -164,7 +164,7 @@ public class Main {
             for (int i = 0; i < 5; i++) {
                 correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
-        };
+        }
         System.out.println("T = " + T + "K");
         out.println("T = " + T + "K");
         for (int i = 0; i < 5; i++) {
@@ -216,7 +216,7 @@ public class Main {
                 return x[1] * x[2] - k10 * (1 - x[5]) * x[0] * x[4];
             }
         };
-        // G(HCl) + 2 * G(H2) + 3 * G(NH3) = 0
+        // G(H) = G(HCl) + 2 * G(H2) + 3 * G(NH3) = 0
         // D(HCl) * (Pg(HCl) - Pe(HCl)) + 2 * D(H2) * (Pg(H2) - Pe(H2)) + 3 * D(NH3) * (Pg(NH3) - Pe(NH3))
         functions[2] = new Function() {
             @Override
@@ -224,7 +224,7 @@ public class Main {
                 return d[0] * (p[0] - x[0]) + 2 * d[4] * (p[4] - x[4]) + 3 * d[2] * (p[2] - x[2]);
             }
         };
-        // 3 * G(AlCl3) + G(GaCl) + G(HCl) = 0
+        // G(Cl) = 3 * G(AlCl3) + G(GaCl) + G(HCl) = 0
         // 3 * D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) + D(HCl) * (Pg(HCl) - Pe(HCl)) = 0
         functions[3] = new Function() {
             @Override
@@ -232,7 +232,7 @@ public class Main {
                 return 3 * d[3] * (p[3] - x[3]) + d[1] * (p[1] - x[1]) + d[0] * (p[0] - x[0]);
             }
         };
-        // G(AlCl3) + G(GaCl) = G(NH3)
+        // G(Al) + G(Ga) = G(AlCl3) + G(GaCl) = G(NH3) = G(N)
         // D(AlCl3) * (Pg(AlCl3) - Pe(AlCl3)) + D(GaCl) * (Pg(GaCl) - Pe(GaCl)) = D(NH3) * (Pg(NH3) - Pe(NH3))
         functions[4] = new Function() {
             @Override
@@ -258,7 +258,7 @@ public class Main {
                 correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
             correct &= (x[5] >= 0 && x[5] <= 1);
-        };
+        }
         System.out.println("Pg(AlCl3) = " + pressure.get("AlCl3"));
         out.println("Pg(AlCl3) = " + pressure.get("AlCl3"));
         for (int i = 0; i < 5; i++) {

@@ -28,7 +28,7 @@ public class EquationSystem {
 
     /**
      * Finds argument of rough function minimum
-     * @param f function
+     * @param f unary function
      * @param x0 initial argument
      * @param initialStep initial dx
      * @param precision minimum dx

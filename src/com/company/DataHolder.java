@@ -82,7 +82,7 @@ public class DataHolder {
                 // 2 HCl + Al = AlCl2 + H2
                 return Math.exp(-(2 * getG("HCl", T) + getG("Al", T) - getG("AlCl2", T) - getG("H2", T)) / (R * T));
             case 3:
-                // 6 HCl + 2 Al = 3 AlCl3 + 3 H2
+                // 6 HCl + 2 Al = 2 AlCl3 + 3 H2
                 return Math.exp(-(6 * getG("HCl", T) + 2 * getG("Al", T) - 2 * getG("AlCl3", T) - 3 * getG("H2", T)) / (R * T)) * ATMOSPHERIC_PRESSURE;
             case 4:
                 // 2 HCl + 2 Ga = 2 GaCl + H2
