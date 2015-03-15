@@ -1,9 +1,7 @@
 package com.company;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
@@ -79,8 +77,8 @@ public class Main {
                 correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
         }
-        System.out.println("T = " + T + "K");
-        out.println("T = " + T + "K");
+        System.out.println("T = " + T);
+        out.println("T = " + T);
         for (int i = 0; i < 5; i++) {
             System.out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
             out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
@@ -165,8 +163,8 @@ public class Main {
                 correct &= (x[i] >= -ALLOWED_DISCREPANCY && x[i] <= DataHolder.ATMOSPHERIC_PRESSURE + ALLOWED_DISCREPANCY);
             }
         }
-        System.out.println("T = " + T + "K");
-        out.println("T = " + T + "K");
+        System.out.println("T = " + T);
+        out.println("T = " + T);
         for (int i = 0; i < 5; i++) {
             System.out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
             out.println("Pe(" + chemicalAgent[i] + ") = " + x[i]);
@@ -279,9 +277,24 @@ public class Main {
         out.println("Vg(AlGaN) = " + v);
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        Map<String, Double> pressure = new HashMap<String, Double>();
+    public static Map<String, List<Double>> parseFile(String fileName) throws IOException {
+        Map<String, List<Double>> result = new HashMap<String, List<Double>>();
+        BufferedReader in = new BufferedReader(new FileReader(fileName));
+        String s;
+        while ((s = in.readLine()) != null) {
+            String[] strings = s.split(" ");
+            if (result.get(strings[0]) == null) {
+                result.put(strings[0], new ArrayList<Double>());
+            }
+            result.get(strings[0]).add(Double.parseDouble(strings[2]));
+        }
+        in.close();
+        return result;
+    }
+
+    public static void main(String[] args) throws IOException {
         PrintWriter out;
+        Map<String, Double> pressure = new HashMap<String, Double>();
         pressure.put("HCl", 10000d);
         pressure.put("N2", 90000d);
         pressure.put("AlCl", 0d);
@@ -291,40 +304,95 @@ public class Main {
         pressure.put("GaCl2", 0d);
         pressure.put("GaCl3", 0d);
         pressure.put("H2", 0d);
+
+        // Task 1
+        /*
         out = new PrintWriter("task1.out");
         for (int i = 35; i <= 65; i++) {
             double T = 10 * i + 273;
             solveAlClx(pressure, T, 0.01, out);
         }
-        out.close();
+        out.close();/**/
+
+        // Task 2
+        /*
         out = new PrintWriter("task2.out");
         for (int i = 65; i <= 95; i++) {
             double T = 10 * i + 273;
             solveGaClx(pressure, T, 0.01, out);
         }
-        out.close();
-        out = new PrintWriter("task3.out");
+        out.close();/**/
+
+        // Task 3
+        /*
+        out = new PrintWriter("task3_pure_N2.out");
         pressure.put("NH3", 1500d);
         pressure.put("HCl", 0d);
-        for (int q = 0; q < 2; q++) {
-            if (q == 0) {
-                System.out.println("Pure N2");
-                out.println("Pure N2");
-                pressure.put("N2", 98470d);
-                pressure.put("H2", 0d);
-            } else {
-                System.out.println("H2/N2 = 1/9");
-                out.println("H2/N2 = 1/9");
-                pressure.put("N2", 88623d);
-                pressure.put("H2", 9847d);
-            }
-            for (int i = 0; i <= 30; i++) {
-                pressure.put("AlCl3", (double)i);
-                pressure.put("GaCl", (double)(30 - i));
-                solveAlGaN(pressure, 1100 + 273, 0.01, out);
-            }
+        System.out.println("Pure N2");
+        pressure.put("N2", 98470d);
+        pressure.put("H2", 0d);
+        for (int i = 0; i <= 30; i++) {
+            pressure.put("AlCl3", (double)i);
+            pressure.put("GaCl", (double)(30 - i));
+            solveAlGaN(pressure, 1100 + 273, 0.01, out);
         }
-
         out.close();
+        out = new PrintWriter("task3_N2_H2.out");
+        System.out.println("H2/N2 = 1/9");
+        pressure.put("N2", 88623d);
+        pressure.put("H2", 9847d);
+        for (int i = 0; i <= 30; i++) {
+            pressure.put("AlCl3", (double)i);
+            pressure.put("GaCl", (double)(30 - i));
+            solveAlGaN(pressure, 1100 + 273, 0.01, out);
+        }
+        out.close();
+        /**/
+        // Parsing results
+        Locale locale = new Locale("ru");
+        Map<String, List<Double>> resMap = parseFile("task1.out");
+        List<Double> t = resMap.get("T");
+        String[] valueNames = new String[] {"G(AlCl)", "G(AlCl2)", "G(AlCl3)", "Ve(Al)"};
+        for (String valueName: valueNames) {
+            out = new PrintWriter("task1_" + valueName + ".out");
+            List<Double> values = resMap.get(valueName);
+            for (int i = 0; i < t.size(); i++) {
+                out.printf(locale, "%f\t%f\n", (1 / t.get(i)), Math.log(Math.abs(values.get(i))));
+            }
+            out.close();
+        }
+        resMap = parseFile("task2.out");
+        t = resMap.get("T");
+        valueNames = new String[] {"G(GaCl)", "G(GaCl2)", "G(GaCl3)", "Ve(Ga)"};
+        for (String valueName: valueNames) {
+            out = new PrintWriter("task2_" + valueName + ".out");
+            List<Double> values = resMap.get(valueName);
+            for (int i = 0; i < t.size(); i++) {
+                out.printf(locale, "%f\t%f\n", (1 / t.get(i)), Math.log(Math.abs(values.get(i))));
+            }
+            out.close();
+        }
+        resMap = parseFile("task3_pure_N2.out");
+        List<Double> PgAlCl3 = resMap.get("Pg(AlCl3)");
+        valueNames = new String[] {"G(AlCl3)", "G(GaCl)", "Vg(AlGaN)", "x"};
+        for (String valueName: valueNames) {
+            out = new PrintWriter("task3_" + valueName + "N2.out");
+            List<Double> values = resMap.get(valueName);
+            for (int i = 0; i < PgAlCl3.size(); i++) {
+                out.printf(locale, "%f\t%f\n", (PgAlCl3.get(i) / 30), values.get(i));
+            }
+            out.close();
+        }
+        resMap = parseFile("task3_N2_H2.out");
+        PgAlCl3 = resMap.get("Pg(AlCl3)");
+        valueNames = new String[] {"G(AlCl3)", "G(GaCl)", "Vg(AlGaN)", "x"};
+        for (String valueName: valueNames) {
+            out = new PrintWriter("task3_" + valueName + "N2_H2.out");
+            List<Double> values = resMap.get(valueName);
+            for (int i = 0; i < PgAlCl3.size(); i++) {
+                out.printf(locale, "%f\t%f\n", (PgAlCl3.get(i) / 30), values.get(i));
+            }
+            out.close();
+        }
     }
 }
