@@ -379,7 +379,7 @@ public class Main {
             out = new PrintWriter("task3_" + valueName + "N2.out");
             List<Double> values = resMap.get(valueName);
             for (int i = 0; i < PgAlCl3.size(); i++) {
-                out.printf(locale, "%f\t%f\n", (PgAlCl3.get(i) / 30), values.get(i));
+                out.printf(locale, "%f\t%e\n", (PgAlCl3.get(i) / 30), values.get(i));
             }
             out.close();
         }
@@ -390,7 +390,7 @@ public class Main {
             out = new PrintWriter("task3_" + valueName + "N2_H2.out");
             List<Double> values = resMap.get(valueName);
             for (int i = 0; i < PgAlCl3.size(); i++) {
-                out.printf(locale, "%f\t%f\n", (PgAlCl3.get(i) / 30), values.get(i));
+                out.printf(locale, "%f\t%e\n", (PgAlCl3.get(i) / 30), values.get(i));
             }
             out.close();
         }
